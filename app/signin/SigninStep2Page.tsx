@@ -14,11 +14,20 @@ export default function SigninStep2Page() {
     gender: "F",
   });
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const { loginData, setLoginData, setCurrentStep } = useSigninData();
 
   const handleUserSigninStep2 = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
+
+    setErrorMessage(null);
+
+    if (!data.birthday) {
+      setErrorMessage("생년월일을 입력해주세요.");
+      return;
+    }
 
     // 필수 아닌 필드
     setLoginData((prev) => ({
@@ -56,6 +65,9 @@ export default function SigninStep2Page() {
         showYearDropdown
         dropdownMode="select"
       />
+      {errorMessage && (
+        <span className="text-sm text-red-500">{errorMessage}</span>
+      )}
 
       <div className="mt-2 flex w-full items-center justify-start gap-4">
         <label className="group flex cursor-pointer flex-col gap-1 text-xs">
@@ -64,7 +76,7 @@ export default function SigninStep2Page() {
             className={`border-indigo-700`}
             onChange={() => setData((prev) => ({ ...prev, gender: "F" }))}
             type="radio"
-            checked={data.gender == "F"}
+            checked={data.gender === "F"}
             placeholder="여성"
           ></input>
         </label>
@@ -74,7 +86,7 @@ export default function SigninStep2Page() {
             className={`border-indigo-700`}
             onChange={() => setData((prev) => ({ ...prev, gender: "M" }))}
             type="radio"
-            checked={data.gender == "M"}
+            checked={data.gender === "M"}
             placeholder="남성"
           ></input>
         </label>
@@ -84,7 +96,7 @@ export default function SigninStep2Page() {
             className={`border-indigo-700`}
             onChange={() => setData((prev) => ({ ...prev, gender: "other" }))}
             type="radio"
-            checked={data.gender == "other"}
+            checked={data.gender === "other"}
           ></input>
         </label>
       </div>

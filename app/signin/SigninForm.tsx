@@ -7,7 +7,7 @@ import SigninStep2Page from "./SigninStep2Page";
 import SigninStep3Page from "./SigninStep3Page";
 
 export default function SigninForm() {
-  const { loginData, currentStep } = useSigninData();
+  const { loginData, setCurrentStep, currentStep } = useSigninData();
 
   useEffect(() => {
     const alertUser = (e: BeforeUnloadEvent) => {
@@ -25,9 +25,17 @@ export default function SigninForm() {
   return (
     <div className="rounded-xl border border-solid border-gray-300 p-10">
       <div className="mb-5 flex w-full items-center justify-center gap-4">
-        <div className={`${"bg-indigo-500"} h-2 w-10 transition-colors`}></div>
         <div
-          className={`${currentStep === 2 || currentStep === 3 ? "bg-indigo-500" : "bg-gray-500"} h-2 w-10 transition-colors`}
+          onClick={() => setCurrentStep(1)}
+          className={`${"bg-indigo-500"} h-2 w-10 cursor-pointer transition-colors`}
+        ></div>
+        <div
+          onClick={() => {
+            if (currentStep === 3) {
+              setCurrentStep(2);
+            }
+          }}
+          className={`${currentStep === 2 || currentStep === 3 ? "bg-indigo-500" : "bg-gray-500"} ${currentStep === 3 ? "cursor-pointer" : ""} h-2 w-10 transition-colors`}
         ></div>
         <div
           className={`${currentStep === 3 ? "bg-indigo-500" : "bg-gray-500"} h-2 w-10 transition-colors`}

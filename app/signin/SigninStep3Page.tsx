@@ -134,7 +134,7 @@ export default function SigninStep3Page() {
           이전 단계
         </button>
         <button type="submit" className="basic-button-class">
-          다음단계
+          회원가입
         </button>
       </div>
     </form>
