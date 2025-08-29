@@ -19,10 +19,8 @@ bun dev
 ```bash
 npm install
 npm run build
-npm run preview
+npm run start
 ```
-
-이후에는
 
 ## 기술 선택
 
