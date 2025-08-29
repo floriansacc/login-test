@@ -1,3 +1,4 @@
+import { SigninDataProvider } from "@/lib/context/SigninDataContext";
 import "./globals.css";
 
 export default function RootLayout({
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <SigninDataProvider>{children}</SigninDataProvider>
+      </body>
     </html>
   );
 }

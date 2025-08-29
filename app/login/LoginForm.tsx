@@ -1,5 +1,10 @@
 "use client";
 
+import { createSession } from "@/lib/functions/session";
+import {
+  LoginInfoModel,
+  loginInfoModelFromStringList,
+} from "@/lib/models/login_info_model";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -9,11 +14,35 @@ export default function LoginForm() {
     password: string | null;
   }>({ email: null, password: null });
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const router = useRouter();
 
-  const handleUserLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUserLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
+
+    try {
+      const db = window.localStorage.getItem("database");
+      const currentAccountInfo: LoginInfoModel[] = loginInfoModelFromStringList(
+        db ?? "[]",
+      );
+
+      const isRegisteredEmail = loginData?.email?.includes("@")
+        ? currentAccountInfo.find((e) => e.email === loginData?.email)
+        : currentAccountInfo.find((e) => e.id === loginData?.email);
+
+      if (isRegisteredEmail) {
+        // success
+        await createSession(isRegisteredEmail);
+        router.push("/main");
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage("아이디 및 비밀번호가 일치하지 않습니다.");
+    }
   };
 
   const handleNavigateSignin = () => {
@@ -34,8 +63,11 @@ export default function LoginForm() {
         }
         className="input-class border-indigo-700"
         type="text"
-        placeholder="아이디"
+        placeholder="아이디 또는 이메일"
       ></input>
+      {errorMessage && (
+        <span className="text-sm text-red-500">{errorMessage}</span>
+      )}
       <span className="mt-2 pl-1">비밀번호</span>
       <input
         value={loginData.password ?? ""}

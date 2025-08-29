@@ -40,8 +40,8 @@ export default function SigninStep3Page() {
 
       if (loginData) {
         const isExist =
-          currentAccountInfo.find((e) => e.id === loginData?.id) ||
-          currentAccountInfo.find((e) => e.email === loginData?.email);
+          currentAccountInfo.some((e) => e.id === loginData?.id) ||
+          currentAccountInfo.some((e) => e.email === loginData?.email);
 
         if (isExist) {
           alert("같은 아이디나 이메일로 가입한 계정이 있습니다.");

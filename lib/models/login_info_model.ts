@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export interface LoginInfoModel {
   // 1 단계 - 필수
   id?: string;

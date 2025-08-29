@@ -1,9 +1,12 @@
+"use server";
+
 import { cookies } from "next/headers";
 import {
   LoginInfoModel,
   loginInfoModelFromJson,
   loginInfoModelToString,
 } from "../models/login_info_model";
+import { redirect } from "next/navigation";
 
 export async function createSession(loginInfo: LoginInfoModel) {
   const cookieStore = await cookies();
@@ -19,10 +22,27 @@ export async function createSession(loginInfo: LoginInfoModel) {
 }
 
 export async function getLoginInfo(): Promise<LoginInfoModel | undefined> {
+  try {
+    const cookieStore = await cookies();
+    const loginInfo = cookieStore.get("loginInfo")?.value;
+
+    if (!loginInfo) return undefined;
+
+    return loginInfoModelFromJson(JSON.parse(loginInfo));
+  } catch (error) {
+    console.log(error);
+    return undefined;
+  }
+}
+
+export async function logout() {
   const cookieStore = await cookies();
-  const loginInfo = cookieStore.get("loginInfo")?.value;
 
-  if (!loginInfo) return undefined;
-
-  return loginInfoModelFromJson(loginInfo);
+  try {
+    cookieStore.delete("loginInfo");
+    redirect("/login");
+  } catch (error) {
+    console.log(error);
+    redirect("/login");
+  }
 }
