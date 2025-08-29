@@ -1,6 +1,7 @@
 "use client";
 
 import { useSigninData } from "@/lib/context/SigninDataContext";
+import { validateEmail } from "@/lib/functions/methods";
 import { SigninFormStep1Model } from "@/lib/models/signin_form";
 import { useEffect, useState } from "react";
 
@@ -63,6 +64,13 @@ export default function SigninStep1Page() {
         email: "이메일을 입력해주세요",
       }));
     }
+    if (!validateEmail(data.email ?? null)) {
+      isValid = false;
+      setErrorMessage((prev) => ({
+        ...prev,
+        email: "올바른 형식의 이메일을 입력해주세요",
+      }));
+    }
     if (!data.phoneNumber) {
       isValid = false;
       setErrorMessage((prev) => ({
@@ -83,6 +91,7 @@ export default function SigninStep1Page() {
       password: data.password!,
       phoneNumber: data.phoneNumber!,
     }));
+
     setCurrentStep(2);
   };
 
@@ -185,7 +194,7 @@ export default function SigninStep1Page() {
         }
         className={`${errorMessage.phoneNumber ? "border-red-700 ring-red-600" : "border-indigo-700"} input-class`}
         type="number"
-        placeholder="전화번호"
+        placeholder="전화번호 ('-' 없이 입력)"
       ></input>
       {errorMessage.phoneNumber && (
         <span className="text-sm text-red-500">{errorMessage.phoneNumber}</span>

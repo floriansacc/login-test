@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSigninData } from "@/lib/context/SigninDataContext";
 import { SigninFormStep2Model } from "@/lib/models/signin_form";
-import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { formatDate } from "@/lib/functions/methods";
 
 export default function SigninStep2Page() {
   const [data, setData] = useState<SigninFormStep2Model>({
@@ -12,11 +16,14 @@ export default function SigninStep2Page() {
 
   const { loginData, setLoginData, setCurrentStep } = useSigninData();
 
-  const handleUserSigninStep2 = () => {
+  const handleUserSigninStep2 = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     // 필수 아닌 필드
     setLoginData((prev) => ({
       ...prev,
-      birthday: data.birthday,
+      birthday: formatDate(data.birthday ?? null),
       gender: data.gender,
     }));
 
@@ -25,9 +32,8 @@ export default function SigninStep2Page() {
 
   useEffect(() => {
     if (!loginData) return;
-
     setData(() => ({
-      birthday: loginData.birthday,
+      birthday: loginData.birthday ? new Date(loginData.birthday) : null,
       gender: loginData.gender ?? "F",
     }));
   }, [loginData]);
@@ -39,15 +45,17 @@ export default function SigninStep2Page() {
       className="flex flex-col items-start justify-start gap-1"
     >
       <span className="mt-2 pl-1">생년월일</span>
-      <input
-        value={data.birthday ?? ""}
-        onChange={(e) =>
-          setData((prev) => ({ ...prev, birthday: e.target.value }))
-        }
+      <DatePicker
+        selected={data.birthday ?? null}
+        onChange={(e) => setData((prev) => ({ ...prev, birthday: e }))}
         className={`input-class border-indigo-700`}
-        type="text"
-        placeholder="생년월일"
-      ></input>
+        dateFormat="yyyy-MM-dd"
+        placeholderText="생년월일"
+        peekNextMonth
+        showMonthDropdown
+        showYearDropdown
+        dropdownMode="select"
+      />
 
       <div className="mt-2 flex w-full items-center justify-start gap-4">
         <label className="group flex cursor-pointer flex-col gap-1 text-xs">

@@ -7,6 +7,6 @@ export interface SigninFormStep1Model {
 }
 
 export interface SigninFormStep2Model {
-  birthday?: string | null;
+  birthday?: Date | null;
   gender?: "F" | "M" | "other" | null;
 }

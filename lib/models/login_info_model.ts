@@ -13,6 +13,9 @@ export interface LoginInfoModel {
   socialPlatforms?: SocialModel[];
 }
 
+const loginInfoModelFromJsonList = (json: any[]): LoginInfoModel[] =>
+  json.map((e) => loginInfoModelFromJson(e));
+
 export const loginInfoModelFromJson = (json: any): LoginInfoModel => {
   return {
     id: json.id,
@@ -24,6 +27,9 @@ export const loginInfoModelFromJson = (json: any): LoginInfoModel => {
     socialPlatforms: socialModelFromJsonList(json.socialPlatforms),
   };
 };
+
+const loginInfoModelToJsonList = (model: LoginInfoModel[]): any[] =>
+  model.map((e) => loginInfoModelToJson(e));
 
 export const loginInfoModelToJson = (model: LoginInfoModel): any => {
   return {
@@ -41,8 +47,19 @@ export const loginInfoModelToString = (model: LoginInfoModel): string => {
   return JSON.stringify(loginInfoModelToJson(model));
 };
 
+export const loginInfoModelListToString = (
+  models: LoginInfoModel[],
+): string => {
+  return JSON.stringify(loginInfoModelToJsonList(models));
+};
+
 export const loginInfoModelFromString = (entry: string): LoginInfoModel => {
   return loginInfoModelFromJson(JSON.parse(entry));
+};
+export const loginInfoModelFromStringList = (
+  entries: string,
+): LoginInfoModel[] => {
+  return loginInfoModelFromJsonList(JSON.parse(entries));
 };
 
 export interface SocialModel {

@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useSigninData } from "@/lib/context/SigninDataContext";
-import { SocialModel } from "@/lib/models/login_info_model";
+import {
+  LoginInfoModel,
+  loginInfoModelFromStringList,
+  loginInfoModelListToString,
+  SocialModel,
+} from "@/lib/models/login_info_model";
 import { useRouter } from "next/navigation";
 
 export default function SigninStep3Page() {
@@ -14,17 +19,44 @@ export default function SigninStep3Page() {
 
   const router = useRouter();
 
-  const { setLoginData, setCurrentStep } = useSigninData();
+  const { loginData, setLoginData, setCurrentStep } = useSigninData();
 
-  const handleUserSigninStep3 = async () => {
+  const handleUserSigninStep3 = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     // 필수 아닌 필드
     setLoginData((prev) => ({
       ...prev,
       socialPlatforms: data,
     }));
 
-    setCurrentStep("done");
-    //TODO save in local storage
+    // setCurrentStep("done");
+    try {
+      const db = window.localStorage.getItem("database");
+      const currentAccountInfo: LoginInfoModel[] = loginInfoModelFromStringList(
+        db ?? "[]",
+      );
+
+      if (loginData) {
+        const isExist =
+          currentAccountInfo.find((e) => e.id === loginData?.id) ||
+          currentAccountInfo.find((e) => e.email === loginData?.email);
+
+        if (isExist) {
+          alert("같은 아이디나 이메일로 가입한 계정이 있습니다.");
+          return;
+        }
+
+        currentAccountInfo.push(loginData);
+
+        const updatedDb = loginInfoModelListToString(currentAccountInfo);
+
+        window.localStorage.setItem("database", updatedDb);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     alert("회원가입이 완료되었습니다!");
     router.push("/login");
   };
